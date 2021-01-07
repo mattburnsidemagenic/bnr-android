@@ -6,11 +6,18 @@
             name="viewModel"
             type="com.bignerdranch.android.beatbox.SoundViewModel" />
     </data>
-    <Button
-        style="@style/BeatBoxButton.Strong"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:text="@{viewModel.title}"
-        android:onClick="@{() -> viewModel.onButtonClicked()}"
-        tools:text="Sound name"/>
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp">
+        <Button
+            style="@style/BeatBoxButton.Strong"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:text="@{viewModel.title}"
+            android:onClick="@{() -> viewModel.onButtonClicked()}"
+            tools:text="Sound name"/>
+    </FrameLayout>
+
 </layout>
