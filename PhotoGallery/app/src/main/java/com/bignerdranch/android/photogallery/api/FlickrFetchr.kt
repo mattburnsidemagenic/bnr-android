@@ -39,9 +39,15 @@ class FlickrFetchr {
     }
 
     fun fetchPhotos(): LiveData<List<GalleryItem>> {
-        val responseLiveData: MutableLiveData<List<GalleryItem>> = MutableLiveData()
-        val flickrRequest: Call<FlickrResponse> = flickrApi.fetchPhotos()
+        return fetchPhotoMetadata(flickrApi.fetchPhotos())
+    }
 
+    fun searchPhotos(query: String): LiveData<List<GalleryItem>> {
+        return fetchPhotoMetadata(flickrApi.searchPhotos(query))
+    }
+
+    private fun fetchPhotoMetadata(flickrRequest: Call<FlickrResponse>) : LiveData<List<GalleryItem>> {
+        val responseLiveData: MutableLiveData<List<GalleryItem>> = MutableLiveData()
         flickrRequest.enqueue(object: Callback<FlickrResponse> {
             override fun onResponse(call: Call<FlickrResponse>, response: Response<FlickrResponse>) {
                 Log.d(TAG, "Response Received: ${response.body()}")
