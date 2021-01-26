@@ -1,5 +1,6 @@
 package com.bignerdranch.android.photogallery
 
+import android.content.Intent
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
@@ -7,9 +8,11 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.*
+import android.widget.Gallery
 import android.widget.ImageView
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -150,8 +153,22 @@ class PhotoGalleryFragment : VisibleFragment() {
         fun newInstance() = PhotoGalleryFragment()
     }
 
-    private class PhotoHolder(private val itemImageView: ImageView) : RecyclerView.ViewHolder(itemImageView) {
+    private inner class PhotoHolder(private val itemImageView: ImageView) : RecyclerView.ViewHolder(itemImageView), View.OnClickListener {
+        private lateinit var galleryItem: GalleryItem
+        init {
+            itemView.setOnClickListener(this)
+        }
         val bindDrawable: (Drawable) -> Unit = itemImageView::setImageDrawable
+
+        fun bindGalleryItem(item: GalleryItem) {
+            galleryItem = item
+        }
+
+        override fun onClick(v: View) {
+            //val intent = Intent(Intent.ACTION_VIEW, galleryItem.photoPageUri)
+            val intent = PhotoPageActivity.newIntent(requireContext(), galleryItem.photoPageUri)
+            startActivity(intent)
+        }
     }
 
     private inner class PhotoAdapter(private val galleryItems: List<GalleryItem>) : RecyclerView.Adapter<PhotoHolder>() {
@@ -162,6 +179,7 @@ class PhotoGalleryFragment : VisibleFragment() {
 
         override fun onBindViewHolder(holder: PhotoHolder, position: Int) {
             val galleryItem = galleryItems[position]
+            holder.bindGalleryItem(galleryItem)
            val placeholder: Drawable = ContextCompat.getDrawable(requireContext(), R.drawable.bill_up_close) ?: ColorDrawable()
             holder.bindDrawable(placeholder)
             thumbnailDownloader.queueThumbnail(holder, galleryItem.url)
